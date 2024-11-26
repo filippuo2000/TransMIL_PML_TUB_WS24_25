@@ -1,5 +1,5 @@
 
-**To run the training please run the below command:**
+**To run the training please run the below command in the /home/pml16/ folder**
 
 apptainer run --nv -B /home/space/datasets/camelyon16:/mnt ./pml_update.sif python MS1/train.py --split /home/pml16/camelyon16_mini_split.csv
 
