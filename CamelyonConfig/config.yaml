@@ -1,0 +1,13 @@
+General:
+  epochs: 5
+  log_output: /home/pml16/log_output/
+
+Data:
+  base_directory: "/mnt/"
+  Train:
+    batch_size: 1
+  Val:
+    batch_size: 1
+  Test:
+    batch_size: 1
+
