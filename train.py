@@ -5,7 +5,7 @@ import torch.nn as nn
 from torch.utils.data import DataLoader
 
 from datasets.camelyon import load_data
-from models.TransMILBaseline import TransMILBaseline
+from models.trans_mil_baseline import TransMILBaseline
 from utils.utils import read_yaml
 from visualization import plot_stats
 
