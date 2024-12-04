@@ -1,7 +1,7 @@
 
 **To run the training please run the below command in the /home/pml16/ folder**
 
-apptainer run --nv -B /home/space/datasets/camelyon16:/mnt ./pml_update.sif python MS1/train.py --split /home/pml16/camelyon16_mini_split.csv
+apptainer run --nv -B /home/space/datasets/camelyon16:/mnt ./new_pml_container.sif python MS2/train.py --split /home/pml16/camelyon16_mini_split.csv
 
 where:
 - **-B** mounts the directory with the dataset to the container, so that it can be accesed by apptainer from the inside. It is important to mount this exact directory: /home/space/datasets/camelyon16:/mnt
