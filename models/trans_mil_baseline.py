@@ -1,5 +1,6 @@
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 
 
 class TransMILBaseline(nn.Module):
@@ -40,5 +41,7 @@ class TransMILBaseline(nn.Module):
 
         class_token = x[:, 0]  # [B, 1, new_num_features]
         class_token = self.ln(class_token)  # [B, 1, new_num_features]
-        class_token = self.fc2(class_token)  # [B, num_class]
-        return class_token
+        logits = self.fc2(class_token)  # [B, num_class]
+        logits_prob = F.softmax(logits, dim=1)
+        # prediction = torch.argmax(logits, dim=1)
+        return {'logits': logits, 'y_prob': logits_prob}

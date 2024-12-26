@@ -1,9 +1,15 @@
 General:
-  epochs: 5
+  epochs: 10
   log_output: /home/pml16/log_output/
+  num_classes: 2
+  model: TransMILBaseline
 
 Data:
   base_directory: "/mnt/"
+  data_path: "/mnt/features/20x/ctranspath_pt"
+  split_file: "/home/pml16/camelyon16_mini_split.csv"
+  shuffle: True
+
   Train:
     batch_size: 1
   Val:
@@ -11,3 +17,5 @@ Data:
   Test:
     batch_size: 1
 
+Optimizer:
+  lr: 0.0002

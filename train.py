@@ -27,7 +27,9 @@ def make_parse():
 def common_compute(model, batch, criterion):
     features, labels = batch
     features, labels = features.to(DEVICE), labels.to(DEVICE)
-    logits = model.forward(features)
+    output = model.forward(features)
+    logits, y_prob = output['logits'], output['y_prob']
+    print(f"after sigmoid: {y_prob}")
     loss = criterion(logits, labels)
     return logits, loss, labels
 
@@ -60,11 +62,11 @@ DEVICE = (
 
 
 def main(cfg: dict):
-    num_epochs = cfg["General"]["epochs"]
-    log_output = cfg["General"]["log_output"]
+    num_epochs = cfg.General.epochs
+    log_output = cfg.General.log_output
 
     train_dataset, test_dataset, val_dataset = load_data(
-        split_file=cfg["Split"], base_dir="/mnt/"
+        split_file=cfg.Data.split_path, base_dir="/mnt/"
     )
 
     train_dataloader = DataLoader(train_dataset, batch_size=1, shuffle=True)
@@ -166,5 +168,5 @@ def main(cfg: dict):
 if __name__ == "__main__":
     args = make_parse()
     cfg = read_yaml(args.config)
-    cfg["Split"] = args.split
+    cfg.Data.split_path = args.split
     main(cfg)
