@@ -1,13 +1,16 @@
 import argparse
+import random
+import string
+from pathlib import Path
 
-import torch
-import torch.nn as nn
-from torch.utils.data import DataLoader
+import wandb
+from pytorch_lightning import Trainer, seed_everything
+from pytorch_lightning.loggers import WandbLogger
 
-from datasets.camelyon import load_data
-from models.trans_mil_baseline import TransMILBaseline
+from callbacks.callbacks import get_checkpoint_callback, get_early_stopping
+from datasets.lightning_datamodule import CamelyonDataset
+from models.lightning_model_module import MIL
 from utils.utils import read_yaml
-from visualization import plot_stats
 
 
 def make_parse():
@@ -20,153 +23,86 @@ def make_parse():
         default="/home/pml16/MS2/CamelyonConfig/config.yaml",
         type=str,
     )
+
+    parser.add_argument(
+        "--run_name",
+        default=''.join(
+            random.choices(string.ascii_letters + string.digits, k=10)
+        ),
+        type=str,
+    )
+
     args = parser.parse_args()
     return args
 
 
-def common_compute(model, batch, criterion):
-    features, labels = batch
-    features, labels = features.to(DEVICE), labels.to(DEVICE)
-    output = model.forward(features)
-    logits, y_prob = output['logits'], output['y_prob']
-    print(f"after sigmoid: {y_prob}")
-    loss = criterion(logits, labels)
-    return logits, loss, labels
-
-
-def training_step(model, batch, optimizer, criterion):
-    _, loss, _ = common_compute(model, batch, criterion)
-    loss.backward()
-    optimizer.step()
-    optimizer.zero_grad()
-    return loss
-
-
-def test_step(model, batch, criterion):
-    logits, loss, y = common_compute(model, batch, criterion)
-    _, preds = torch.max(logits.detach(), axis=1)  # [B, 1]
-    correct_preds = (preds == y).sum().item()
-    return loss, y.shape[0], correct_preds
-
-
-def val_step(model, batch, criterion):
-    logits, loss, y = common_compute(model, batch, criterion)
-    _, preds = torch.max(logits.detach(), axis=1)  # [B, 1]
-    correct_preds = (preds == y).sum().item()
-    return loss, y.shape[0], correct_preds
-
-
-DEVICE = (
-    torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
-)
-
-
 def main(cfg: dict):
+    seed_everything(cfg.General.seed)
+    data_cfg = cfg.Data
+
     num_epochs = cfg.General.epochs
-    log_output = cfg.General.log_output
+    num_features = cfg.Model.num_features
+    run_name = cfg.General.run_name
+    ckpt_save_path = Path(
+        cfg.Data.ckpt_save_path,
+        "seed_version",
+        f"{run_name}_lr_{cfg.Optimizer.lr}_num_feat_{num_features}",
+    )
+    batch_size = data_cfg.Train.batch_size
 
-    train_dataset, test_dataset, val_dataset = load_data(
-        split_file=cfg.Data.split_path, base_dir="/mnt/"
+    dataset = CamelyonDataset(data_cfg)
+    dataset.setup()
+    trans_model = MIL(cfg)
+
+    wandb.login(key="", relogin=True)
+    wandb_logger = WandbLogger(
+        name=run_name,
+        project='TransMIL_TUB_SEED',
+        job_type='train',
+        config={
+            "num_features": num_features,
+            "batch_size": batch_size,
+            "num_epochs": num_epochs,
+            "lr": cfg.Optimizer.lr,
+            "dropout": 0.1,
+        },
     )
 
-    train_dataloader = DataLoader(train_dataset, batch_size=1, shuffle=True)
-    val_dataloader = DataLoader(val_dataset, batch_size=1, shuffle=True)
-    test_dataloader = DataLoader(test_dataset, batch_size=1, shuffle=True)
+    early_stopping_callback = get_early_stopping()
+    checkpoint_callback = get_checkpoint_callback(save_path=ckpt_save_path)
 
-    model = TransMILBaseline(
-        new_num_features=384, n_heads=4, num_classes=2, device=DEVICE
+    trainer = Trainer(
+        check_val_every_n_epoch=2,
+        num_sanity_val_steps=1,
+        log_every_n_steps=50,
+        accelerator="auto",
+        logger=wandb_logger,
+        max_epochs=num_epochs,
+        callbacks=[early_stopping_callback, checkpoint_callback],
     )
-    model.to(DEVICE)
-    optimizer = torch.optim.Adam(model.parameters(), lr=2e-4)
-    criterion = nn.CrossEntropyLoss()
+    # regular test and train
+    trainer.fit(model=trans_model, datamodule=dataset)
+    trainer.test(ckpt_path="best", datamodule=dataset)
 
-    batch_size = 1
-    epochs = num_epochs
+    # test only
+    # best_ckpt = ""
+    # model = MIL.load_from_checkpoint(best_ckpt, cfg=cfg)
+    # test_loader = dataset.test_dataloader()
+    # trainer.test(model, test_loader)
 
-    train_epoch_loss = []
-    val_epoch_loss = []
-    val_epoch_acc = []
-
-    for epoch in range(epochs):
-        loss_total = []
-        correct = 0
-        total = 0
-        print(f"epoch {epoch+1} out of {epochs}")
-        for batch in train_dataloader:
-            model.train()
-            loss = training_step(model, batch, optimizer, criterion)
-            loss_total.append(loss.detach().item())
-        avg_epoch_loss = sum(loss_total) / len(train_dataloader)
-        train_epoch_loss.append(avg_epoch_loss)
-
-        print(
-            f"avg loss after epoch {epoch+1} / {epochs} is: {avg_epoch_loss}"
-        )
-        loss_total.clear()
-
-        with torch.no_grad():
-            for batch in val_dataloader:
-                model.eval()
-                loss, batch_size, correct_preds = val_step(
-                    model, batch, criterion
-                )
-                loss_total.append(loss.detach().item())
-                total += batch_size
-                correct += correct_preds
-
-        avg_epoch_loss = sum(loss_total) / len(val_dataloader)
-        acc = correct / total * 100
-
-        val_epoch_loss.append(avg_epoch_loss)
-        val_epoch_acc.append(acc)
-        print(
-            f"Validation accuracy after epoch {epoch+1} / {epochs} is: {acc}"
-        )
-
-    plot_stats(
-        epochs,
-        train_epoch_loss,
-        "Train loss",
-        plot_type="loss",
-        save=True,
-        save_path=log_output,
-    )
-    plot_stats(
-        epochs,
-        val_epoch_loss,
-        "Val loss",
-        plot_type="loss",
-        save=True,
-        save_path=log_output,
-    )
-    plot_stats(
-        epochs,
-        val_epoch_acc,
-        "Val accuracy",
-        plot_type="acc",
-        save=True,
-        save_path=log_output,
-    )
-
-    loss_total = []
-    with torch.no_grad():
-        for batch in test_dataloader:
-            correct, total = 0, 0
-            model.eval()
-            loss, batch_size, correct_preds = test_step(
-                model, batch, criterion
-            )
-            loss_total.append(loss.detach().item())
-            total += batch_size
-            correct += correct_preds
-        avg_test_loss = sum(loss_total) / len(test_dataloader)
-        acc = correct / total * 100
-        print(f"avg loss after test is: {avg_test_loss}")
-        print(f"Test accuracy after {epochs} epochs training is: {acc}")
+    # # Test with the last checkpoint
+    # print("Testing with last checkpoint:")
+    # trainer.test(ckpt_path="last", datamodule=dataset)
+    wandb.finish()
 
 
 if __name__ == "__main__":
     args = make_parse()
     cfg = read_yaml(args.config)
-    cfg.Data.split_path = args.split
+    print(f"lr is: {cfg.Optimizer.lr}")
+    if args.split:
+        cfg.Data.split_file = args.split
+    if args.run_name:
+        cfg.General.run_name = args.run_name
+
     main(cfg)

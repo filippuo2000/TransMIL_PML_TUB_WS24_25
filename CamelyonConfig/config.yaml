@@ -1,13 +1,17 @@
 General:
-  epochs: 10
+  epochs: 30
   log_output: /home/pml16/log_output/
   num_classes: 2
   model: TransMILBaseline
+  seed: 2021
+Model:
+  num_features: 512
 
 Data:
   base_directory: "/mnt/"
   data_path: "/mnt/features/20x/ctranspath_pt"
   split_file: "/home/pml16/camelyon16_mini_split.csv"
+  ckpt_save_path: "/home/pml16/ckpts/"
   shuffle: True
 
   Train:
@@ -19,3 +23,4 @@ Data:
 
 Optimizer:
   lr: 0.0002
+  decay: 0.00001
