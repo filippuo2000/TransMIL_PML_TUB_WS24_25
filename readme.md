@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="imgs/test_114_pred.png" width="45%" />
+  <img src="imgs/test_114_annot.jpg" width="45%" />
+</p>
 
 **To run the training please run the below command in the /home/pml16/ folder**
 
