@@ -15,10 +15,10 @@ def get_checkpoint_callback(save_path: str):
     return checkpoint_callback
 
 
-def get_early_stopping():
+def get_early_stopping(patience_value: int = 5):
     early_stop_callback = EarlyStopping(
         monitor='val_loss',
-        patience=10,
+        patience=patience_value,
         mode='min',
         verbose=True,
     )

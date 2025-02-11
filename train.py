@@ -32,17 +32,24 @@ def make_parse():
         type=str,
     )
 
+    parser.add_argument("--run_repeats", default=1, type=int)
+
     args = parser.parse_args()
     return args
 
 
 def main(cfg: dict):
-    seed_everything(cfg.General.seed)
+    seed = random.randint(1, 1000)
+    seed_everything(seed)
+    # seed_everything(cfg.General.seed)
     data_cfg = cfg.Data
 
     num_epochs = cfg.General.epochs
     num_features = cfg.Model.num_features
-    run_name = cfg.General.run_name
+    # add a seed number to run_name,
+    # to distinguish between runs in the same group
+    run_name = f"{cfg.General.run_name}_{seed}"
+
     ckpt_save_path = Path(
         cfg.Data.ckpt_save_path,
         "seed_version",
@@ -57,18 +64,21 @@ def main(cfg: dict):
     wandb.login(key="", relogin=True)
     wandb_logger = WandbLogger(
         name=run_name,
-        project='TransMIL_TUB_SEED',
+        project='TransMIL_TUB_REPO_TEST',
         job_type='train',
+        group=cfg.General.test_group,
         config={
             "num_features": num_features,
             "batch_size": batch_size,
             "num_epochs": num_epochs,
             "lr": cfg.Optimizer.lr,
             "dropout": 0.1,
+            "ppeg": cfg.Model.use_ppeg,
+            "first_fc_layer": cfg.Model.use_fclayer,
         },
     )
 
-    early_stopping_callback = get_early_stopping()
+    early_stopping_callback = get_early_stopping(cfg.General.patience)
     checkpoint_callback = get_checkpoint_callback(save_path=ckpt_save_path)
 
     trainer = Trainer(
@@ -82,17 +92,17 @@ def main(cfg: dict):
     )
     # regular test and train
     trainer.fit(model=trans_model, datamodule=dataset)
-    trainer.test(ckpt_path="best", datamodule=dataset)
+    # trainer.test(ckpt_path="best", datamodule=dataset)
 
     # test only
-    # best_ckpt = ""
+
+    # best_ckpt = ("./MS3/ckpts/"
+    # "best-epoch=epoch=13-val_loss=val_loss=0.25.ckpt"
+    # )
     # model = MIL.load_from_checkpoint(best_ckpt, cfg=cfg)
     # test_loader = dataset.test_dataloader()
     # trainer.test(model, test_loader)
 
-    # # Test with the last checkpoint
-    # print("Testing with last checkpoint:")
-    # trainer.test(ckpt_path="last", datamodule=dataset)
     wandb.finish()
 
 

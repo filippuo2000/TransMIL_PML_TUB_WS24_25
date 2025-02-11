@@ -1,17 +1,22 @@
 General:
-  epochs: 30
+  epochs: 5
   log_output: /home/pml16/log_output/
   num_classes: 2
-  model: TransMILBaseline
+  model: TransMIL
   seed: 2021
+  test_group: TEST
+  patience: 5
+  optimizer: sgd
 Model:
   num_features: 512
+  use_fclayer: true
+  use_ppeg: true
 
 Data:
-  base_directory: "/mnt/"
-  data_path: "/mnt/features/20x/ctranspath_pt"
-  split_file: "/home/pml16/camelyon16_mini_split.csv"
-  ckpt_save_path: "/home/pml16/ckpts/"
+  base_directory: /mnt/
+  data_path: /mnt/features/20x/ctranspath_pt
+  split_file: /home/pml16/camelyon16_mini_split.csv
+  ckpt_save_path: /home/pml16/ckpts/
   shuffle: True
 
   Train:
@@ -22,5 +27,5 @@ Data:
     batch_size: 1
 
 Optimizer:
-  lr: 0.0002
-  decay: 0.00001
+  lr: 0.002
+  decay: 0.001

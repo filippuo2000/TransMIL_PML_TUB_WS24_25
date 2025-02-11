@@ -5,8 +5,7 @@ import torch
 import torch.nn as nn
 import wandb
 from pytorch_lightning import LightningModule
-
-# from pytorch_optimizer import Lookahead, RAdam
+from pytorch_optimizer import Lookahead, RAdam
 from torchmetrics import (
     AUROC,
     Accuracy,
@@ -17,23 +16,28 @@ from torchmetrics import (
     Specificity,
 )
 
-from models.trans_mil_baseline import TransMILSquaring
+from models.trans_mil import TransMIL
 
 
 class MIL(LightningModule):
     def __init__(self, cfg):
         super().__init__()
-        self.model = TransMILSquaring(
+        # self.model = TransMILSquaring(
+        #     new_num_features=cfg.Model.num_features,
+        #     num_classes=cfg.General.num_classes,
+        # )
+        # model_class = dynamic_import()
+        self.model = TransMIL(
             new_num_features=cfg.Model.num_features,
             num_classes=cfg.General.num_classes,
+            use_fclayer=cfg.Model.use_fclayer,
+            use_ppeg=cfg.Model.use_ppeg,
         )
+        self.optimizer = cfg.General.optimizer
         self.lr = cfg.Optimizer.lr
         self.weight_decay = cfg.Optimizer.decay
         self.num_classes = cfg.General.num_classes
         self.run_name = cfg.General.run_name
-        self.current_epoch_training_loss = torch.tensor(0.0)
-        self.total_samples = torch.tensor(0.0)
-        self.correct_samples = torch.tensor(0.0)
         self.test_results = {
             "labels": [],
             "predictions": [],
@@ -93,9 +97,7 @@ class MIL(LightningModule):
                 self.acc_dict[label.item()]["num_correct"] += 1
             self.acc_dict[label.item()]["num_total"] += 1
 
-        num_correct_preds = (preds == labels).sum().item()
-        self.total_samples += labels.shape[0]
-        self.correct_samples += num_correct_preds
+        # num_correct_preds = (preds == labels).sum().item()
         return loss, y_prob, labels, preds, case_id
 
     def validation_step(self, batch, batch_idx):
@@ -120,10 +122,10 @@ class MIL(LightningModule):
         return {'val_loss': loss}
 
     def on_validation_epoch_end(self):
-        print(
-            f"num of correct preds: {self.correct_samples}, \
-            num samples: {self.total_samples}"
-        )
+        # print(
+        #     f"num of correct preds: {self.correct_samples}, \
+        #     num samples: {self.total_samples}"
+        # )
         print(
             f"positive preds: {self.acc_dict[1]['num_correct']}, \
             total positive samples: {self.acc_dict[1]['num_total']}"
@@ -132,10 +134,8 @@ class MIL(LightningModule):
             f"negative preds: {self.acc_dict[0]['num_correct']}, \
             total negative samples: {self.acc_dict[0]['num_total']}"
         )
-        acc = self.calc_acc()
         class_acc = self.calc_class_acc("val")
 
-        self.log('my_acc', acc, prog_bar=True, logger=True)
         self.log('val_AUC', self.AUROC.compute(), prog_bar=True, logger=True)
         self.log_dict(class_acc, prog_bar=True, logger=True)
         self.log_dict(self.valid_metrics.compute(), prog_bar=True, logger=True)
@@ -168,10 +168,6 @@ class MIL(LightningModule):
 
     def on_test_epoch_end(self):
         print(
-            f"num of correct preds: {self.correct_samples}, \
-            num samples: {self.total_samples}"
-        )
-        print(
             f"positive preds: {self.acc_dict[1]['num_correct']}, \
             total positive samples: {self.acc_dict[1]['num_total']}"
         )
@@ -179,16 +175,14 @@ class MIL(LightningModule):
             f"negative preds: {self.acc_dict[0]['num_correct']}, \
             total negative samples: {self.acc_dict[0]['num_total']}"
         )
-        acc = self.calc_acc()
         class_acc = self.calc_class_acc("test")
 
-        self.log('my_test_acc', acc, prog_bar=True, logger=True)
         self.log('test_AUC', self.AUROC.compute(), prog_bar=True, logger=True)
         self.log_dict(class_acc, prog_bar=True, logger=True)
         self.log_dict(self.test_metrics.compute(), prog_bar=True, logger=True)
 
         output_file = Path(
-            "/home/pml16/bash_scripts/seed_runs", f"{self.run_name}.json"
+            "./bash_scripts/final_test", f"{self.run_name}.json"
         )
         with open(output_file, "w") as f:
             json.dump(self.test_results, f, indent=4)
@@ -215,28 +209,24 @@ class MIL(LightningModule):
     def on_train_epoch_end(self):
         pass
 
-    # SGD optimizer config
-    def configure_optimizers(self):
-        optimizer = torch.optim.SGD(
-            self.model.parameters(), lr=self.lr, weight_decay=self.weight_decay
-        )
-        return [optimizer]
-
-    #     # return [optimizer], [lr_scheduler]
-
     # Lookahead optimizer config
-    # def configure_optimizers(self):
-    #     radam = RAdam(
-    #         self.model.parameters(),lr=self.lr,weight_decay=self.weight_decay
-    #     )
-    #     optimizer = Lookahead(radam, alpha=0.5, k=5)
-    #     return [optimizer]
-
-    def calc_acc(self):
-        acc = (self.correct_samples / self.total_samples) * 100
-        self.total_samples = torch.tensor(0.0)
-        self.correct_samples = torch.tensor(0.0)
-        return acc
+    def configure_optimizers(self):
+        if self.optimizer == "sgd":
+            optimizer = torch.optim.SGD(
+                self.model.parameters(),
+                lr=self.lr,
+                weight_decay=self.weight_decay,
+            )
+        elif self.optimizer == "lookahead":
+            radam = RAdam(
+                self.model.parameters(),
+                lr=self.lr,
+                weight_decay=self.weight_decay,
+            )
+            optimizer = Lookahead(radam, alpha=0.5, k=5)
+        else:
+            raise ValueError(f"Optimizer {self.optimzier} is not implemented")
+        return [optimizer]
 
     def calc_class_acc(self, prefix: str):
         class_acc = {}
