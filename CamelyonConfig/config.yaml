@@ -15,7 +15,7 @@ Model:
   use_fclayer: true
   use_ppeg: false
 Wandb:
-  key: cabbd3f89e3110e43ae9248e78e413f3031a03ae
+  key: 
   project_name: transmil_train
 
 
