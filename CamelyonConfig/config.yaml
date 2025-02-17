@@ -1,21 +1,28 @@
 General:
-  epochs: 5
+  epochs: 30
   log_output: /home/pml16/log_output/
   num_classes: 2
   model: TransMIL
-  seed: 2021
+  seed: 311
+  random_seed: false
+  ckpt_path: ./MS3/ckpts/best-epoch=epoch=13-val_loss=val_loss=0.25.ckpt
   test_group: TEST
   patience: 5
-  optimizer: sgd
+  optimizer: sgd # alternative is lookahead
+  dropout: 0.1
 Model:
   num_features: 512
   use_fclayer: true
-  use_ppeg: true
+  use_ppeg: false
+Wandb:
+  key: cabbd3f89e3110e43ae9248e78e413f3031a03ae
+  project_name: transmil_train
+
 
 Data:
   base_directory: /mnt/
   data_path: /mnt/features/20x/ctranspath_pt
-  split_file: /home/pml16/camelyon16_mini_split.csv
+  split_file: /mnt/splits/camelyon16_tumor_85_15_orig_0.csv
   ckpt_save_path: /home/pml16/ckpts/
   shuffle: True
 

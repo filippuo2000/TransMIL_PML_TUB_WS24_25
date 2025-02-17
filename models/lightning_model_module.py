@@ -1,4 +1,5 @@
 import json
+import os
 from pathlib import Path
 
 import torch
@@ -22,11 +23,6 @@ from models.trans_mil import TransMIL
 class MIL(LightningModule):
     def __init__(self, cfg):
         super().__init__()
-        # self.model = TransMILSquaring(
-        #     new_num_features=cfg.Model.num_features,
-        #     num_classes=cfg.General.num_classes,
-        # )
-        # model_class = dynamic_import()
         self.model = TransMIL(
             new_num_features=cfg.Model.num_features,
             num_classes=cfg.General.num_classes,
@@ -181,9 +177,9 @@ class MIL(LightningModule):
         self.log_dict(class_acc, prog_bar=True, logger=True)
         self.log_dict(self.test_metrics.compute(), prog_bar=True, logger=True)
 
-        output_file = Path(
-            "./bash_scripts/final_test", f"{self.run_name}.json"
-        )
+        output_dir = ".MS3/output_jsons/"
+        os.makedirs(os.path.dirname(output_dir), exist_ok=True)
+        output_file = Path(output_dir, f"{self.run_name}.json")
         with open(output_file, "w") as f:
             json.dump(self.test_results, f, indent=4)
             artifact = wandb.Artifact("test_results", type="dataset")
