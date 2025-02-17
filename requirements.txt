@@ -10,3 +10,8 @@ captum
 nystrom-attention
 addict
 pytorch_optimizer
+black
+isort
+mypy
+pylint
+flake8

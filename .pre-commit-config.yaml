@@ -1,0 +1,20 @@
+repos:
+  - repo: local
+    hooks:
+      - id: black
+        name: black
+        entry: apptainer exec /home/pml16/captum_container.sif black
+        language: system
+        types: [python]
+
+      - id: isort
+        name: isort
+        entry: apptainer exec /home/pml16/captum_container.sif isort
+        language: system
+        types: [python]
+
+      - id: flake8
+        name: flake8
+        entry: apptainer exec /home/pml16/captum_container.sif flake8
+        language: system
+        types: [python]
