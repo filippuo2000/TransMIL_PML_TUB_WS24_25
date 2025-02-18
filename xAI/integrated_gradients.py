@@ -14,12 +14,14 @@ class IGWrapper(nn.Module):
 
 
 def integrated_gradients(model, features, label):
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+
     ig_wrapper = IGWrapper(model)
     ig = IntegratedGradients(forward_func=ig_wrapper)
 
-    baseline = torch.zeros_like(features, requires_grad=True)
+    baseline = torch.zeros_like(features, requires_grad=True, device=device)
 
-    target = torch.tensor([label])
+    target = torch.tensor([label], device=device)
 
     attribution = ig.attribute(
         inputs=features, baselines=baseline, target=target, n_steps=10

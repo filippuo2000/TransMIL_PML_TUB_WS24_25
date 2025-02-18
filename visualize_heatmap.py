@@ -1,6 +1,5 @@
 import argparse
 
-import matplotlib.pyplot as plt
 import torch
 
 from datasets.camelyon import TorchDataset
@@ -14,9 +13,7 @@ from xAI.saliency_gradients import saliency_gradients
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "--split", type=str, default="/home/pml16/camelyon16_mini_split.csv"
-    )
+    parser.add_argument("--split", type=str)
     parser.add_argument(
         "--config",
         default="/home/pml16/MS2/CamelyonConfig/config.yaml",
@@ -39,21 +36,23 @@ def main(args):
     case_id = args.case_id
     method = args.method
     save_dir = args.save_dir
+    cfg = read_yaml(args.config)
+    data_path = cfg.Data.data_path
+    split_path = cfg.Data.split_file
+    cfg.General.run_name = "test"
 
     test_set = TorchDataset(
-        data_path="/mnt/features/20x/ctranspath_pt",
-        split_path=args.split,
-        split_type="test",
+        data_path=data_path, split_path=split_path, split_type="test"
     )
 
     case_id = int(case_id.split("_")[1]) - 1
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+    print(f"Running on {device} device")
 
     features, label, case_id = test_set[case_id]
     features = torch.unsqueeze(features, dim=0)
+    features = features.to(device)
     features.requires_grad_()
-
-    cfg = read_yaml(args.config)
-    cfg.General.run_name = "test"
 
     ckpt_path = (
         "./MS3/ckpts/" "best-epoch=epoch=13-val_loss=val_loss=0.25.ckpt"
@@ -69,11 +68,7 @@ def main(args):
     elif method == "saliency_grads":
         attributes = saliency_gradients(model, features)
 
-    colormap = plt.get_cmap('jet')
-    colors = [colormap(val) for val in attributes]
-
     heatmap(
-        colors,
         slide_id=case_id,
         patch_id_list=attributes,
         base_dir="/mnt/",

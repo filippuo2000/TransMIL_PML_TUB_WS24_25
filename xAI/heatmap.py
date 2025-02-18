@@ -8,7 +8,6 @@ import pandas as pd
 
 
 def heatmap(
-    colors,
     slide_id: str = None,
     patch_id_list=list[int],
     base_dir="/mnt/",
@@ -49,18 +48,8 @@ def heatmap(
     # Downsampling factor for the selected level
     downsample_factor = slide.level_downsamples[level]
 
-    # Check if WSI is vertical (rotate if necessary)
-    rotated = False
-    # if wsi_dimensions[1] > wsi_dimensions[0]:
-    #     print("Rotating WSI to horizontal position.")
-    #     wsi_thumbnail = wsi_thumbnail.rotate(-90, expand=True)
-    #     rotated = True
-
     # Load patch coordinates from the CSV
     df = pd.read_csv(csv_path)
-
-    # selected_patches = df.sample(n=N).reset_index()
-    # selected_patches_ids = selected_patches['path'].tolist()
     selected_patches = df
 
     # Plot the rotated WSI
@@ -68,8 +57,6 @@ def heatmap(
     # plt.imshow(np.array(wsi_thumbnail))
     plt.imshow(black_arr)
     plt.axis("off")
-
-    rotated = False
 
     # norm = Normalize(vmin=0, vmax=1)
 
@@ -86,22 +73,17 @@ def heatmap(
         patch_size_abs = row["patch_size_abs"]
         patch_size_scaled = patch_size_abs / downsample_factor
 
-        if rotated:
-            # Adjust coordinates for a 90° clockwise rotation
-            x_scaled_new = wsi_dimensions[1] - y_scaled - patch_size_scaled
-            y_scaled_new = x_scaled  # - patch_size_abs
-            x_scaled, y_scaled = x_scaled_new, y_scaled_new
-
-        curr_color = colors[i]
+        importance = patch_id_list[i]
+        curr_color = plt.cm.Reds(importance)
         # Draw the rectangle
         rect = patches.Rectangle(
             (x_scaled, y_scaled),
             patch_size_scaled,
             patch_size_scaled,
             color=curr_color,
-            linewidth=1,
+            linewidth=0,
             facecolor=curr_color,
-            alpha=0.5,
+            alpha=1.0,
         )
 
         plt.gca().add_patch(rect)

@@ -8,7 +8,7 @@ def attention_rollout(model, features):
     attention = []
 
     def att_hook(module, input, output):
-        attention.append(output[1].detach())
+        attention.append(output[1].detach().cpu())
 
     model.model.at1.att.register_forward_hook(att_hook)
     model.model.at2.att.register_forward_hook(att_hook)

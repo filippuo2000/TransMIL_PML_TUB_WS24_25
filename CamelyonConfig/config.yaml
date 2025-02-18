@@ -18,7 +18,6 @@ Wandb:
   key: 
   project_name: transmil_train
 
-
 Data:
   base_directory: /mnt/
   data_path: /mnt/features/20x/ctranspath_pt
