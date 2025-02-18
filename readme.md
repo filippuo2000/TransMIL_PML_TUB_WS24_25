@@ -1,7 +1,7 @@
 <p align="center">
-  <img src="imgs/test_114_annot.jpg" width="45%" />
-  <img src="imgs/test_114_pred.png" width="45%" />
-</p>
+  <a href="https://github.com/othneildrew/Best-README-Template">
+    <img src="./imgs/transmil_gif.gif" alt="Logo" width="800" height="600">
+  </a>
 
 **To run the training please run the below command in the /home/pml16/ folder**
 
@@ -21,7 +21,7 @@ where:
 **To run the heatmap visualization please run the below command in the /home/pml16/ folder**
 
 heatmap visualization: <br>
-**'apptainer run --nv -B /home/space/datasets/camelyon16:/mnt ./captum_container.sif python MS3/visualize_heatmap.py --split /mnt/splits/camelyon16_tumor_85_15_orig_0.csv --config MS3/CamelyonConfig/config.yaml --case_id test_027 --method att_rollout --save_dir /home/pml16/'**
+**'apptainer run --nv -B /home/space/datasets/camelyon16:/mnt ./captum_container.sif python MS3/visualize_heatmap.py --config MS3/CamelyonConfig/config.yaml --case_id test_027 --method att_rollout --save_dir /home/pml16/'**
 
 where:
 - **-B** mounts the directory with the dataset to the container, so that it can be accesed by apptainer from the inside. It is important to mount this exact directory: /home/space/datasets/camelyon16:/mnt
@@ -30,3 +30,6 @@ where:
 - **--case_id** is the id of the test case for which the heatmap will be generated. It can be omitted, then the default sample is: 'test_001'
 - **--method** is the absolute path to the chosen explainability method, based on which the heatmap will be visualized. It can be omitted, then the default method is: 'att_rollout'. Other options are: "integrated_grads" and "saliency_grads"
 - **--save_dir** is the directory where the heatmap will be saved (it can't). It can be omitted, then the default sample is: 'test_001'
+
+
+apptainer run --nv -B /home/space/datasets/camelyon16:/mnt ./captum_container.sif python MS3/test.py
