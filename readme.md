@@ -20,15 +20,6 @@
         <li><a href="#camelyon16-visualization">Camelyon16 Visualization</a></li>
       </ul>
     </li>
-    <li>
-      <a href="#getting-started-with-mnist-dataset">Getting Started with MNIST Dataset</a>
-      <ul>
-        <li><a href="#installation">Installation</a></li>
-        <li><a href="#mnist-dataset-curation">MNIST Dataset curation</a></li>
-        <li><a href="#mnist-model-training">MNIST Model Training</a></li>
-        <li><a href="#mnist-visualization">MNIST Visualization</a></li>
-      </ul>
-    </li>
     <li><a href="#license">License</a></li>
     <li><a href="#contact">Contact</a></li>
     <li><a href="#acknowledgments">Acknowledgments</a></li>
