@@ -29,29 +29,24 @@
 <!-- GETTING STARTED -->
 ## Getting Started
 
-This repository is part of our participation in the Machine Learning Project (Winter Semester 2024/25). Our goal is to replicate the findings of "Attention-based Deep Multiple Instance Learning" by [Ilse et al. (2018)], a study that leverages attention mechanisms to enhance deep multiple instance learning (MIL), a widely used approach in weakly supervised learning.
+This repository is the result of work for the Machine Learning Project course at TUB(Winter Semester 2024/25). The goal of the project was to replicate the results of the ["TransMIL: Transformer based Correlated Multiple Instance Learning for Whole Slide Image Classification"](https://arxiv.org/abs/2106.00908), a study that leverages the use of the transformers and Multiple Instance Learning methods to enhance the classification on high-resolution input data slides, which are independently divided into smaller patches. MIL is a widely used approach in weakly supervised learning and very suitable approach to deal with the challenges of the dataset.
 
-The project is structured into three milestones, with this repository specifically documenting our progress on the first milestone. Our primary focus areas include:
+In the end the original results not only have been matched, but also outperformed as shown in the table below. This is most likely due to the use of a more data specific feature extraction method - [CTransPath paper] (https://www.semanticscholar.org/paper/Transformer-based-unsupervised-contrastive-learning-WangYang/439e78726a9c4a30216ebc43a82e44758a5a4619) - than the one used in the original paper (pretrained network on ImageNet).
 
-1️⃣ Dataset Curation
-Preparing and preprocessing datasets to align with the original study's setup.
+## Test Results Comparison
+The final selected model outperforms the model provided by the authors of the TransMIL paper.
 
-2️⃣ Data Visualization
-Exploring and visualizing the dataset to gain insights and verify its characteristics against the paper’s specifications.
+| Name                     | Recall (%) | AUC (%)  | Acc (%)  | Specificity (%) |
+|--------------------------|-----------|---------|---------|----------------|
+| 512_no_ppeg_larger_lr   | 89.8  | **95.00** | **91.47** | 92.50          |
+| TransMIL paper model    | n/a       | 93.09   | 88.37   | n/a            |
 
-3️⃣ Model Prototyping
-Developing initial models to lay the foundation for implementing the attention-based MIL approach.
-
-4️⃣ Baseline Evaluation
-Implementing and assessing baseline methods from the paper to establish performance benchmarks.
-
-5️⃣ XAI Method Comparison
-Applying interpretability techniques (Attention Weights, Shapley Values, Layer-wise Relevance Propagation, and SmoothGrad) to analyze instance-level attributions in whole-slide images.
+## xAI
+To further analyze the model’s performance, 3 different xAI methods have been implemented - Attention Rollout, Salient Gradients, Integrated Gradients. They were utilized to generate the per-patch importance scores, which allowed for the generation of visual heatmaps presenting where the model focuses its attention in the classification process. Besides the heatmap, a quantitative summary of the model’s decision process has also been obtained.
 
 ### Prerequisites
 
-All neccesary dependencies hva been described in the requirements.txt file.
-
+All neccesary dependencies have been listed in the '''sh requirements.txt''' file.
 
 ### Installation
 
@@ -60,27 +55,14 @@ All neccesary dependencies hva been described in the requirements.txt file.
    git clone https://github.com/filippuo2000/TransMIL_PML_TUB_WS24_25.git
    ```
 2. Get your wandb key at [https://wandb.ai/site/](https://wandb.ai/site/)
-
-4. Fill the `config.json` file
-   ```js
-   const API_KEY = 'ENTER YOUR API';
-   ```
-5. Change git remote url to avoid accidental pushes to base project
-   ```sh
-   git remote set-url origin github_username/repo_name
-   git remote -v # confirm the changes
-   ```
-
+3. 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
-
 <!-- USAGE EXAMPLES -->
-## Usage
 
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
-
-_For more examples, please refer to the [Documentation](https://example.com)_
+Due to the use of very specific features, which are not shared publicly, the training results will not be reproducible. Features have been extracted with the method described in the [CTransPath paper] (https://www.semanticscholar.org/paper/Transformer-based-unsupervised-contrastive-learning-WangYang/439e78726a9c4a30216ebc43a82e44758a5a4619). Their generation was however not a part of the project, as they were provided by its coordinator.
+_For usage examples, please refer to the [Documentation](https://example.com)_
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -109,17 +91,10 @@ Helpful libraries and papers used in the project
 * [WandB](https://wandb.ai/site)
 * [TransMIL: Transformer based Correlated Multiple Instance Learning for Whole Slide Image Classification](https://arxiv.org/abs/2106.00908)
 * [Camelyon Dataset](https://camelyon16.grand-challenge.org/Data/)
+* [CTransPath for feature extraction] (https://www.semanticscholar.org/paper/Transformer-based-unsupervised-contrastive-learning-Wang Yang/439e78726a9c4a30216ebc43a82e44758a5a4619)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 ## About
-
-## Test Results Comparison
-The final selected model outperforms the model provided by the authors of the TransMIL paper.
-
-| Name                     | Recall (%) | AUC (%)  | Acc (%)  | Specificity (%) |
-|--------------------------|-----------|---------|---------|----------------|
-| 512_no_ppeg_larger_lr   | 89.8  | **95.00** | **91.47** | 92.50          |
-| TransMIL paper model    | n/a       | 93.09   | 88.37   | n/a            |
 
 ## xAI
 To further analyze the model’s performance, 3 different xAI methods have been implemented - Attention Rollout, Salient Gradients, Integrated Gradients. They were utilized to generate the per-patch importance scores, which allowed for the generation of visual heatmaps presenting where the model focuses its attention in the classification process. Besides the heatmap, a quantitative summary of the model’s decision process has also been obtained.
