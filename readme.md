@@ -3,6 +3,16 @@
     <img src="./imgs/transmil_gif.gif" alt="Logo" width="800" height="600">
   </a>
 
+
+## Test Results Comparison
+
+| Name                     | Recall (%) | AUC (%)  | Acc (%)  | Specificity (%) |
+|--------------------------|-----------|---------|---------|----------------|
+| 512_no_ppeg_larger_lr   | **89.8**  | **95.00** | **91.47** | 92.50          |
+| TransMIL paper model    | n/a       | 93.09   | 88.37   | n/a            |
+
+
+
 **To run the training please run the below command in the /home/pml16/ folder**
 
 sample_training: <br>
