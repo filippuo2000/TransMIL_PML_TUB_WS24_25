@@ -20,7 +20,7 @@ Checkpoint for the best model has been shared. Below are the instructions on how
 
 training: <br>
 ```sh
-**'apptainer run --nv -B /home/space/datasets/camelyon16:/mnt ./captum_container.sif python MS3/train.py --split /mnt/splits/camelyon16_tumor_85_15_orig_0.csv --config MS3/CamelyonConfig/config.yaml --run_name full_train_1'**
+apptainer run --nv -B /home/space/datasets/camelyon16:/mnt ./captum_container.sif python MS3/train.py --split /mnt/splits/camelyon16_tumor_85_15_orig_0.csv --config MS3/CamelyonConfig/config.yaml --run_name full_train_1
 ```
 
 where:
@@ -31,7 +31,7 @@ where:
 
 test: <br>
 ```sh
-**'apptainer run --nv -B /home/space/datasets/camelyon16:/mnt ./captum_container.sif python MS3/test.py'**
+apptainer run --nv -B /home/space/datasets/camelyon16:/mnt ./captum_container.sif python MS3/test.py
 ```
 
 ## xAI - heatmap visualization
@@ -39,8 +39,7 @@ test: <br>
 
 heatmap visualization: <br>
 ```sh
-**'apptainer run --nv -B /home/space/datasets/camelyon16:/mnt ./captum_container.sif python MS3/visualize_heatmap.py --config MS3/CamelyonConfig/config.yaml --case_id test_027 --method att_rollout --save_dir /home/pml16/'**
-```
+apptainer run --nv -B /home/space/datasets/camelyon16:/mnt ./captum_container.sif python MS3/visualize_heatmap.py --config MS3/CamelyonConfig/config.yaml --case_id test_027 --method att_rollout --save_dir /home/pml16/
 
 where:
 - **-B** mounts the directory with the dataset to the container, so that it can be accesed by apptainer from the inside. It is important to mount this exact directory: /home/space/datasets/camelyon16:/mnt
@@ -49,3 +48,4 @@ where:
 - **--case_id** is the id of the test case for which the heatmap will be generated. It can be omitted, then the default sample is: 'test_001'
 - **--method** is the absolute path to the chosen explainability method, based on which the heatmap will be visualized. It can be omitted, then the default method is: 'att_rollout'. Other options are: "integrated_grads" and "saliency_grads"
 - **--save_dir** is the directory where the heatmap will be saved (it can't). It can be omitted, then the default sample is: 'test_001'
+```
