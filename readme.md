@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://github.com/othneildrew/Best-README-Template">
-    <img src="./imgs/transmil_gif.gif" alt="Logo" width="800" height="600">
+    <img src="./imgs/transmil_gif.gif" alt="Logo" width="600" height="400">
   </a>
 
 <!-- TABLE OF CONTENTS -->
@@ -29,29 +29,39 @@
 <!-- GETTING STARTED -->
 ## Getting Started
 
-This is an example of how you may give instructions on setting up your project locally.
-To get a local copy up and running follow these simple example steps.
+This repository is part of our participation in the Machine Learning Project (Winter Semester 2024/25). Our goal is to replicate the findings of "Attention-based Deep Multiple Instance Learning" by [Ilse et al. (2018)], a study that leverages attention mechanisms to enhance deep multiple instance learning (MIL), a widely used approach in weakly supervised learning.
+
+The project is structured into three milestones, with this repository specifically documenting our progress on the first milestone. Our primary focus areas include:
+
+1️⃣ Dataset Curation
+Preparing and preprocessing datasets to align with the original study's setup.
+
+2️⃣ Data Visualization
+Exploring and visualizing the dataset to gain insights and verify its characteristics against the paper’s specifications.
+
+3️⃣ Model Prototyping
+Developing initial models to lay the foundation for implementing the attention-based MIL approach.
+
+4️⃣ Baseline Evaluation
+Implementing and assessing baseline methods from the paper to establish performance benchmarks.
+
+5️⃣ XAI Method Comparison
+Applying interpretability techniques (Attention Weights, Shapley Values, Layer-wise Relevance Propagation, and SmoothGrad) to analyze instance-level attributions in whole-slide images.
 
 ### Prerequisites
 
-This is an example of how to list things you need to use the software and how to install them.
-* npm
-  ```sh
-  npm install npm@latest -g
-  ```
+All neccesary dependencies hva been described in the requirements.txt file.
+
 
 ### Installation
 
-1. Get a free API Key at [https://example.com](https://example.com)
-2. Clone the repo
+1. Clone the repo
    ```sh
-   git clone https://github.com/github_username/repo_name.git
+   git clone https://github.com/filippuo2000/TransMIL_PML_TUB_WS24_25.git
    ```
-3. Install NPM packages
-   ```sh
-   npm install
-   ```
-4. Enter your API in `config.js`
+2. Get your wandb key at [https://wandb.ai/site/](https://wandb.ai/site/)
+
+4. Fill the `config.json` file
    ```js
    const API_KEY = 'ENTER YOUR API';
    ```
