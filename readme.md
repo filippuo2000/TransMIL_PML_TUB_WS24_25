@@ -3,15 +3,21 @@
     <img src="./imgs/transmil_gif.gif" alt="Logo" width="800" height="600">
   </a>
 
+## About
 
 ## Test Results Comparison
+The final selected model outperforms the model provided by the authors of the TransMIL paper.
 
 | Name                     | Recall (%) | AUC (%)  | Acc (%)  | Specificity (%) |
 |--------------------------|-----------|---------|---------|----------------|
-| 512_no_ppeg_larger_lr   | **89.8**  | **95.00** | **91.47** | 92.50          |
+| 512_no_ppeg_larger_lr   | 89.8  | **95.00** | **91.47** | 92.50          |
 | TransMIL paper model    | n/a       | 93.09   | 88.37   | n/a            |
 
+## xAI
+To further analyze the model’s performance, 3 different xAI methods have been implemented - Attention Rollout, Salient Gradients, Integrated Gradients. They were utilized to generate the per-patch importance scores, which allowed for the generation of visual heatmaps presenting where the model focuses its attention in the classification process. Besides the heatmap, a quantitative summary of the model’s decision process has also been obtained.
 
+## Training and Inference
+Checkpoint for the best model has been shared. Below are the instructions on how to use it:
 
 **To run the training please run the below command in the /home/pml16/ folder**
 
@@ -21,6 +27,9 @@ sample_training: <br>
 full training: <br>
 **'apptainer run --nv -B /home/space/datasets/camelyon16:/mnt ./captum_container.sif python MS3/train.py --split /mnt/splits/camelyon16_tumor_85_15_orig_0.csv --config MS3/CamelyonConfig/config.yaml --run_name full_train_1'**
 
+test: <br>
+**'apptainer run --nv -B /home/space/datasets/camelyon16:/mnt ./captum_container.sif python MS3/test.py'**
+
 where:
 - **-B** mounts the directory with the dataset to the container, so that it can be accesed by apptainer from the inside. It is important to mount this exact directory: /home/space/datasets/camelyon16:/mnt
 - **--split** is the absolute path to the chosen split version of the CAMELYON16 dataset. It can be omitted, then the default split is chosen: 'camelyon16_tumor_85_15_orig_0.csv'
@@ -28,6 +37,7 @@ where:
 - **--run_name** name of the current experiment, which will be saved to wandb
 
 
+## xAI - heatmap visualization
 **To run the heatmap visualization please run the below command in the /home/pml16/ folder**
 
 heatmap visualization: <br>
@@ -40,6 +50,3 @@ where:
 - **--case_id** is the id of the test case for which the heatmap will be generated. It can be omitted, then the default sample is: 'test_001'
 - **--method** is the absolute path to the chosen explainability method, based on which the heatmap will be visualized. It can be omitted, then the default method is: 'att_rollout'. Other options are: "integrated_grads" and "saliency_grads"
 - **--save_dir** is the directory where the heatmap will be saved (it can't). It can be omitted, then the default sample is: 'test_001'
-
-
-apptainer run --nv -B /home/space/datasets/camelyon16:/mnt ./captum_container.sif python MS3/test.py
