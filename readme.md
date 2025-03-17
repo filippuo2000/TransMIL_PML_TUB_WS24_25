@@ -20,7 +20,7 @@
 <!-- GETTING STARTED -->
 ## About the project
 
-This repository is the result of work for the Machine Learning Project course at TUB(Winter Semester 2024/25). The goal of the project was to replicate the results of the ["TransMIL: Transformer based Correlated Multiple Instance Learning for Whole Slide Image Classification"](https://arxiv.org/abs/2106.00908), a study that leverages the use of the transformers and Multiple Instance Learning methods to enhance the classification on high-resolution input data slides, which are independently divided into smaller patches. MIL is a widely used approach in weakly supervised learning and very suitable approach to deal with the challenges of the dataset.
+This repository is the result of work for the Machine Learning Project course at TUB (Winter Semester 2024/25). The goal of the project was to replicate the results of the ["TransMIL: Transformer based Correlated Multiple Instance Learning for Whole Slide Image Classification"](https://arxiv.org/abs/2106.00908), a study that leverages the use of the transformers and Multiple Instance Learning methods to enhance the classification on high-resolution input data slides, which are independently divided into smaller patches. MIL is a widely used approach in weakly supervised learning and very suitable approach to deal with the challenges of the dataset.
 
 In the end the original results not only have been matched, but also outperformed as shown in the table below. This is most likely due to the use of a more data specific feature extraction method - [CTransPath paper](https://www.semanticscholar.org/paper/Transformer-based-unsupervised-contrastive-learning-WangYang/439e78726a9c4a30216ebc43a82e44758a5a4619) - than the one used in the original paper (pretrained network on ImageNet).
 
@@ -44,8 +44,7 @@ _For usage examples, please refer to the [usage guide](docs/usage.md)
 
 <!-- LICENSE -->
 ## License
-
-Distributed under the project_license. See `LICENSE.txt` for more information.
+Distributed under the MIT License. See `LICENSE.txt` for more information.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -53,7 +52,6 @@ Distributed under the project_license. See `LICENSE.txt` for more information.
 <!-- CONTACT -->
 ## Contact
 * Filip Matysik - f.matysik@campus.tu-berlin.de
-  
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
