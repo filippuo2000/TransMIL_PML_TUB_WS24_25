@@ -1,6 +1,6 @@
 ### Prerequisites
 
-All neccesary dependencies have been listed in the '''sh requirements.txt''' file.
+All neccesary dependencies have been listed in the ```requirements.txt``` file.
 
 ### Installation
 
@@ -9,7 +9,7 @@ All neccesary dependencies have been listed in the '''sh requirements.txt''' fil
    git clone https://github.com/filippuo2000/TransMIL_PML_TUB_WS24_25.git
    ```
 2. Get your wandb key at [https://wandb.ai/site/](https://wandb.ai/site/)
-3. 
+3. Fill the config.yaml file
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
@@ -18,14 +18,10 @@ Checkpoint for the best model has been shared. Below are the instructions on how
 
 **To run the training please run the below command in the /home/pml16/ folder**
 
-sample_training: <br>
-**'apptainer run --nv -B /home/space/datasets/camelyon16:/mnt ./captum_container.sif python MS3/train.py --split /home/pml16/camelyon16_mini_split.csv --run_name mini_run_1'**
-
-full training: <br>
+training: <br>
+```sh
 **'apptainer run --nv -B /home/space/datasets/camelyon16:/mnt ./captum_container.sif python MS3/train.py --split /mnt/splits/camelyon16_tumor_85_15_orig_0.csv --config MS3/CamelyonConfig/config.yaml --run_name full_train_1'**
-
-test: <br>
-**'apptainer run --nv -B /home/space/datasets/camelyon16:/mnt ./captum_container.sif python MS3/test.py'**
+```
 
 where:
 - **-B** mounts the directory with the dataset to the container, so that it can be accesed by apptainer from the inside. It is important to mount this exact directory: /home/space/datasets/camelyon16:/mnt
@@ -33,12 +29,18 @@ where:
 - **--config** is the absolute path to the chosen comfiguration of the model and run file, in the .yaml format. It can be omitted, then the default split is chosen: 'config.yaml'
 - **--run_name** name of the current experiment, which will be saved to wandb
 
+test: <br>
+```sh
+**'apptainer run --nv -B /home/space/datasets/camelyon16:/mnt ./captum_container.sif python MS3/test.py'**
+```
 
 ## xAI - heatmap visualization
 **To run the heatmap visualization please run the below command in the /home/pml16/ folder**
 
 heatmap visualization: <br>
+```sh
 **'apptainer run --nv -B /home/space/datasets/camelyon16:/mnt ./captum_container.sif python MS3/visualize_heatmap.py --config MS3/CamelyonConfig/config.yaml --case_id test_027 --method att_rollout --save_dir /home/pml16/'**
+```
 
 where:
 - **-B** mounts the directory with the dataset to the container, so that it can be accesed by apptainer from the inside. It is important to mount this exact directory: /home/space/datasets/camelyon16:/mnt
