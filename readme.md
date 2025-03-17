@@ -22,7 +22,7 @@
 
 This repository is the result of work for the Machine Learning Project course at TUB(Winter Semester 2024/25). The goal of the project was to replicate the results of the ["TransMIL: Transformer based Correlated Multiple Instance Learning for Whole Slide Image Classification"](https://arxiv.org/abs/2106.00908), a study that leverages the use of the transformers and Multiple Instance Learning methods to enhance the classification on high-resolution input data slides, which are independently divided into smaller patches. MIL is a widely used approach in weakly supervised learning and very suitable approach to deal with the challenges of the dataset.
 
-In the end the original results not only have been matched, but also outperformed as shown in the table below. This is most likely due to the use of a more data specific feature extraction method - [CTransPath paper] (https://www.semanticscholar.org/paper/Transformer-based-unsupervised-contrastive-learning-WangYang/439e78726a9c4a30216ebc43a82e44758a5a4619) - than the one used in the original paper (pretrained network on ImageNet).
+In the end the original results not only have been matched, but also outperformed as shown in the table below. This is most likely due to the use of a more data specific feature extraction method - [CTransPath paper](https://www.semanticscholar.org/paper/Transformer-based-unsupervised-contrastive-learning-WangYang/439e78726a9c4a30216ebc43a82e44758a5a4619) - than the one used in the original paper (pretrained network on ImageNet).
 
 ## Test Results Comparison
 The final selected model outperforms the model provided by the authors of the TransMIL paper.
@@ -38,7 +38,7 @@ To further analyze the model’s performance, 3 different xAI methods have been 
 <!-- USAGE EXAMPLES -->
 
 Due to the use of very specific features, which are not shared publicly, the training results will not be reproducible. Features have been extracted with the method described in the [CTransPath paper](https://www.semanticscholar.org/paper/Transformer-based-unsupervised-contrastive-learning-WangYang/439e78726a9c4a30216ebc43a82e44758a5a4619). Their generation was however not a part of the project, as they were provided by its coordinator.
-_For usage examples, please refer to the [Documentation](https://example.com)_
+_For usage examples, please refer to the [usage guide](docs/usage.md)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -65,6 +65,6 @@ Helpful libraries and papers used in the project
 * [WandB](https://wandb.ai/site)
 * [TransMIL: Transformer based Correlated Multiple Instance Learning for Whole Slide Image Classification](https://arxiv.org/abs/2106.00908)
 * [Camelyon Dataset](https://camelyon16.grand-challenge.org/Data/)
-* [CTransPath for feature extraction] (https://www.semanticscholar.org/paper/Transformer-based-unsupervised-contrastive-learning-Wang Yang/439e78726a9c4a30216ebc43a82e44758a5a4619)
+* [CTransPath for feature extraction](https://www.semanticscholar.org/paper/Transformer-based-unsupervised-contrastive-learning-WangYang/439e78726a9c4a30216ebc43a82e44758a5a4619)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
