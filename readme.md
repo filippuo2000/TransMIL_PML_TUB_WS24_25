@@ -41,7 +41,7 @@ Method that was best able to differentiate between the cancer and non-cancer reg
 
 <p align="center">
   <a href="https://github.com/othneildrew/Best-README-Template">
-    <img src="./imgs/test_114_annot.png" alt="Annotated" width="300" height="200">
+    <img src="./imgs/test_114_annot.jpg" alt="Annotated" width="300" height="200">
     <img src="./imgs/test_114_pred.png" alt="Prediction" width="300" height="200">
   </a>
 </p>
