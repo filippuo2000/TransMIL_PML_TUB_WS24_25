@@ -11,6 +11,9 @@
       <a href="#about-the-project">About The Project</a>
       </ul>
     </li>
+    <li><a href="#Test Results Comparison">Test Results Comparison</a></li>
+    <li><a href="#xAI">xAI</a></li>
+    <li><a href="#usage">Usage</a></li>
     <li><a href="#license">License</a></li>
     <li><a href="#contact">Contact</a></li>
     <li><a href="#acknowledgments">Acknowledgments</a></li>
@@ -46,12 +49,13 @@ Method that was best able to differentiate between the cancer and non-cancer reg
   </a>
 </p>
 
-<!-- USAGE EXAMPLES -->
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
+<!-- USAGE EXAMPLES -->
+## Usage
 Due to the use of very specific features, which are not shared publicly, the training results will not be reproducible. Features have been extracted with the method described in the [CTransPath paper](https://www.semanticscholar.org/paper/Transformer-based-unsupervised-contrastive-learning-WangYang/439e78726a9c4a30216ebc43a82e44758a5a4619).
 In any case for usage examples, please refer to the [usage guide](docs/usage.md)
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- LICENSE -->
 ## License
