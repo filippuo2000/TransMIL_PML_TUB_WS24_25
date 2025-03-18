@@ -11,7 +11,7 @@
       <a href="#about-the-project">About The Project</a>
       </ul>
     </li>
-    <li><a href="#TestResultsComparison">Test Results Comparison</a></li>
+    <li><a href="#Test Results">Test Results</a></li>
     <li><a href="#xAI">xAI</a></li>
     <li><a href="#usage">Usage</a></li>
     <li><a href="#license">License</a></li>
@@ -29,7 +29,7 @@ It is worth noting that the preprocessing of the Whole Slide Images (dividing th
 
 In the end the original results not only have been matched, but also outperformed as shown in the table below. This is most likely due to the use of "better" input features.
 
-## Test Results Comparison
+## Test Results
 The final selected model outperforms the model provided by the authors of the TransMIL paper.
 
 | Name                     | Recall (%) | AUC (%)  | Acc (%)  | Specificity (%) |
