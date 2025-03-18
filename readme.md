@@ -11,7 +11,7 @@
       <a href="#about-the-project">About The Project</a>
       </ul>
     </li>
-    <li><a href="#Test Results Comparison">Test Results Comparison</a></li>
+    <li><a href="#TestResultsComparison">Test Results Comparison</a></li>
     <li><a href="#xAI">xAI</a></li>
     <li><a href="#usage">Usage</a></li>
     <li><a href="#license">License</a></li>
